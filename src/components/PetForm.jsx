@@ -1,23 +1,31 @@
 // src/components/PetForm.jsx
 
 import { useState } from 'react';
+const defualtFormState = {
+    name: '',
+    age: '',
+    breed: '',
+}
 
 const PetForm = (props) => {
-    const [formData, setFormData] = useState({
-        name: '',
-        age: '',
-        breed: '',
-    });
+    // formData state to control the form
+    const [formData, setFormData] = useState(props.selected ? props.selected : defualtFormState);
 
+    // handleChange function to update formData state
     const handleChange = (evt) => {
         setFormData({ ...formData, [evt.target.name]: evt.target.value });
     };
 
     const handleSubmitForm = (evt) => {
         evt.preventDefault();
-        props.handleAddPet(formData);
-        setFormData({ name: '', age: '', breed: '' });
-    };
+        if (props.selected) {
+            props.handleUpdatePet(props.selected._id, formData)
+        } else {
+            props.handleAddPet(formData)
+        }
+
+        setFormData(defualtFormState)
+    }
 
     return (
         <div>
@@ -44,7 +52,13 @@ const PetForm = (props) => {
                     value={formData.breed}
                     onChange={handleChange}
                 />
-                <button type="submit">Add New Pet</button>
+                <button type="submit">
+                    {props.selected ?
+                        'Update Pet'
+                        :
+                        'Add New Pet'
+                    }
+                </button>
             </form>
         </div>
     );
